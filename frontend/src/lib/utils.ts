@@ -56,9 +56,9 @@ export function testData() {
     {
       id: "6",
       name: "Backup Server",
-      host: "backup.example.com",
+      host: "206.189.82.217",
       port: 22,
-      username: "backupadmin",
+      username: "root",
     },
   ];
   return { testFolders,  testConnections };

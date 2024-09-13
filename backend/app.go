@@ -25,6 +25,7 @@ func (a *App) Startup(ctx context.Context) {
 	if err != nil {
 		log.Fatalf("Failed to create config store: %v", err)
 	}
+	log.Printf("App Configuration: %v", configStore.AppConfig)
 	a.configStore = configStore
 }
 

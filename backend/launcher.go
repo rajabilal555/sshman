@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"sshman/backend/models"
 
 	"github.com/google/shlex"
 )
+
+func (a *App) LaunchSSH(connection models.Connection) {
+	a.LaunchTerminal(fmt.Sprintf("ssh %s@%s -p %d", connection.Username, connection.Host, connection.Port))
+}
 
 func (a *App) LaunchTerminal(extra string) string {
 	fmt.Println(extra)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sshman/backend/models"
 
@@ -15,7 +16,7 @@ func DefaultAppConfig() models.AppConfig {
 	return models.AppConfig{
 		Connections:               []models.Connection{},
 		Folders:                   []models.Folder{},
-		DefaultConnectionSettings: models.Connection{},
+		DefaultConnectionSettings: nil,
 	}
 }
 
@@ -30,6 +31,8 @@ func NewAppConfigStore() (*AppConfigStore, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not resolve path for models.AppConfig file: %w", err)
 	}
+
+	fmt.Printf("App Configuration file path: %s", AppConfigFilePath)
 
 	store := &AppConfigStore{AppConfigPath: AppConfigFilePath}
 	store.AppConfig, err = store.Load()
@@ -87,6 +90,29 @@ func (s *AppConfigStore) Save(cfg models.AppConfig) error {
 	return nil
 }
 
-func (a *App) GetConnections() []models.Connection {
-	return a.configStore.AppConfig.Connections
+// func (a *App) GetConnections() []models.Connection {
+// 	return a.configStore.AppConfig.Connections
+// }
+
+// func (a *App) GetFolders() []models.Folder {
+// 	return a.configStore.AppConfig.Folders
+// }
+
+func (a *App) GetAppConfig() models.AppConfig {
+	return a.configStore.AppConfig
+}
+
+func (a *App) SaveAppConfig(cfg models.AppConfig) error {
+	a.configStore.AppConfig = cfg
+	err := a.configStore.Save(cfg)
+	if err != nil {
+		return fmt.Errorf("could not save App Configuration: %w", err)
+	}
+
+	return nil
+}
+
+func (a *App) BrowseConfig() {
+	cmd := exec.Command(`explorer`, `/select,`, a.configStore.AppConfigPath)
+	cmd.Run()
 }

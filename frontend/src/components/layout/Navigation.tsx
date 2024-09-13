@@ -16,16 +16,18 @@ function Navigation({}: Props) {
             Home
           </Button>
         </NavLink>
-        <NavLink to="/users">
+        {/* <NavLink to="/users">
           <Button variant="ghost">
             <Users className="w-4 h-4 mr-2" />
             Users
           </Button>
+        </NavLink> */}
+        <NavLink to="/settings">
+          <Button variant="ghost">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
         </NavLink>
-        <Button variant="ghost">
-          <Settings className="w-4 h-4 mr-2" />
-          Settings
-        </Button>
       </nav>
     </header>
   );

@@ -3,6 +3,6 @@ package models
 type AppConfig struct {
 	Folders     []Folder     `json:"folders"`
 	Connections []Connection `json:"connections"`
-	//
-	DefaultConnectionSettings Connection `json:"defaultConnectionSettings"`
+	// nullable
+	DefaultConnectionSettings *Connection `json:"defaultConnectionSettings",omitempty`
 }

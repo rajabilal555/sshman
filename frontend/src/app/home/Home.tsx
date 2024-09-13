@@ -21,16 +21,28 @@ import {
 import { testData } from "@/lib/utils";
 import { ConnectionEditModal } from "@/components/modals/ConnectionEditModal";
 import { LogPrint } from "$/runtime/runtime";
+import {
+  GetAppConfig,
+  LaunchSSH,
+  LaunchTerminal,
+  SaveAppConfig,
+} from "$/go/app/App";
+import ConnectionListItem from "@/components/shared/ConnectionListItem";
+import useAppConfigStore from "@/stores/appConfig";
 
 type Folder = models.Folder;
-
 type Connection = models.Connection;
+
 function Home() {
   let { testFolders, testConnections } = testData();
 
   const [folders, setFolders] = useState<Folder[]>(testFolders);
 
-  const [connections, setConnections] = useState<Connection[]>(testConnections);
+  const connections = useAppConfigStore((state) => state.connections);
+  const setConnections = useAppConfigStore((state) => state.setConnections);
+  useEffect(() => {
+    useAppConfigStore.getState().fetchFromBackend();
+  }, []);
   const [selectedConnection, setSelectedConnection] = useState<
     Connection | undefined
   >();
@@ -58,7 +70,7 @@ function Home() {
     }
   }, [searchTerm, filteredConnections]);
 
-  const handleConnectionClick = (connection: Connection) => {
+  const handleEditConnection = (connection: Connection) => {
     setSelectedConnection(connection);
     setIsSheetOpen(true);
   };
@@ -66,18 +78,18 @@ function Home() {
   const handleOpenConnection = (connection: Connection) => {
     console.log(`Opening SSH connection to ${connection.host}`);
     setIsSheetOpen(false);
-    // In a real application, this is where you'd trigger opening the connection in a separate program
+    LaunchSSH(connection);
   };
 
   const handleAddConnection = () => {
-    const newConnection: Connection = {
+    const newConnection: models.Connection = models.Connection.createFrom({
       id: connections.length + 1 + "",
       name: "New Connection",
-      host: "",
+      host: "127.0.0.1",
       port: 22,
-      username: "",
-      convertValues: (a, b) => {},
-    };
+      username: "root",
+      folder: undefined,
+    });
     setConnections([...connections, newConnection]);
     setSelectedConnection(newConnection);
     setIsSheetOpen(true);
@@ -104,20 +116,17 @@ function Home() {
     folderId: string | null
   ) => {
     return connections
-      .filter((conn) => conn.folder?.id === folderId)
+      .filter((conn) => conn.folder?.id == folderId)
       .map((conn) => (
-        <li key={conn.id}>
-          <Button
-            variant={"outline"}
-            className="justify-start w-full"
-            onClick={() => handleConnectionClick(conn)}
-          >
-            <Terminal className="w-4 h-4 mr-2" />
-            {conn.name}
-          </Button>
-        </li>
+        <ConnectionListItem
+          key={conn.id}
+          connection={conn}
+          onEdit={handleEditConnection}
+          onClick={handleOpenConnection}
+        />
       ));
   };
+
   return (
     <AppLayout>
       <main className="flex-1 overflow-hidden">
@@ -171,6 +180,18 @@ function Home() {
                 <Plus className="w-4 h-4 mr-2" /> Add Folder
               </Button>
             </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={async () => {
+                  const test = await GetAppConfig();
+                  console.log(test);
+                  LogPrint(JSON.stringify(test));
+                }}
+                className="flex-1"
+              >
+                Test
+              </Button>
+            </div>
           </div>
         </div>
       </main>
@@ -178,9 +199,6 @@ function Home() {
         connection={selectedConnection}
         isOpen={isSheetOpen}
         setIsSheetOpen={setIsSheetOpen}
-        onClose={function (): void {
-          console.log("onClose");
-        }}
       />
     </AppLayout>
   );
