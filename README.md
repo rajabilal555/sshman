@@ -1,7 +1,18 @@
 # SSH Man
 
 > This project is in development.
-It is built using [Wails](https://wails.io/) (`electronjs`, but with `GoLang` backend)
+
+It is built using [Wails](https://wails.io/) (`electronjs`, but with `GoLang` backend).
+
+### Other tools used
+- Wails
+- React
+- Shadcn
+- Zustand (State management)
+
+## Preview
+![image](https://github.com/user-attachments/assets/2c7a0d68-60fb-45f4-ac22-f8c66bd32d94)
+
 
 ## Live Development
 
