@@ -1,11 +1,7 @@
-# README
+# SSH Man
 
-## About
-
-This is the official Wails React-TS template.
-
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+> This project is in development.
+It is built using [Wails](https://wails.io/) (`electronjs`, but with `GoLang` backend)
 
 ## Live Development
 
